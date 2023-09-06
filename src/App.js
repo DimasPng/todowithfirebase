@@ -11,13 +11,12 @@ function App() {
 
   useEffect(() => {
     fetchTasks(URL);
-  }, []);
+  });
 
 
   const taskAddHandler = (task) => {
 
     setTasks((prevTasks) => {
-
       return prevTasks.concat(task)});
   };
 

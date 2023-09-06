@@ -1,6 +1,11 @@
 import classes from './Section.module.css';
+import { ReactNode } from 'react';
 
-const Section = (props) => {
+interface SectionProps {
+  children: ReactNode
+}
+
+const Section = (props: SectionProps) => {
   return <section className={classes.section}>{props.children}</section>;
 };
 

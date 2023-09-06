@@ -1,6 +1,6 @@
-import Section from '../UI/Section';
-import TaskForm from './TaskForm';
-import useHttp from '../../hooks/use-http';
+import Section from '../UI/Section'
+import TaskForm from './TaskForm'
+import useHttp from '../../hooks/use-http'
 
 const NewTask = (props) => {
 
@@ -10,10 +10,10 @@ const NewTask = (props) => {
     const config = {
       url: 'https://todotest-eeafc-default-rtdb.europe-west1.firebasedatabase.app/todo.json',
       method: 'POST',
-      body: JSON.stringify({text: text}),
+      body: JSON.stringify({ text: text } ),
       headers: {
         'Content-Type': 'application/json',
-      }}
+      } }
     return sendRequest(config)
   }
 
