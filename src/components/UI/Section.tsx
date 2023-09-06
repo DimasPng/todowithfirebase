@@ -10,4 +10,3 @@ const Section = (props: SectionProps) => {
 };
 
 export default Section;
-//d3
