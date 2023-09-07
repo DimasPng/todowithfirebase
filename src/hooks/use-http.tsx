@@ -1,6 +1,10 @@
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
-const useHttp= (cb) => {
+interface useHttpProps {
+  cb: Dispatch<SetStateAction<string[]>>
+}
+
+const useHttp= ({ cb }: useHttpProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 

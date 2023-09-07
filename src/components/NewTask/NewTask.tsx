@@ -2,11 +2,15 @@ import Section from '../UI/Section'
 import TaskForm from './TaskForm'
 import useHttp from '../../hooks/use-http'
 
-const NewTask = (props) => {
+interface NewTaskProps {
+  onAddTask: (text: string) => void
+}
+
+const NewTask = (props: NewTaskProps) => {
 
   const [isLoading, error,,,sendRequest] = useHttp(props.onAddTask)
 
-  const addNewTask = (text) => {
+  const addNewTask = (text: string): Promise<void> => {
     const config = {
       url: 'https://todotest-eeafc-default-rtdb.europe-west1.firebasedatabase.app/todo.json',
       method: 'POST',
