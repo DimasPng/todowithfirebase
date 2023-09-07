@@ -1,14 +1,11 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import { HttpRequestConfig, Task, UseHttpReturnType } from './types';
 
-interface useHttpProps {
-  cb: Dispatch<SetStateAction<string[]>>
-}
-
-const useHttp= ({ cb }: useHttpProps) => {
+const useHttp= ( cb: Dispatch<SetStateAction<string[] | string>>): UseHttpReturnType => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const sendRequest = async (config, transformData) => {
+  const sendRequest = useCallback(async (config: HttpRequestConfig, transformData?:(text: Task[])=>Task[]): Promise<Error> => {
 
     setIsLoading(true)
     setError(null )
@@ -22,7 +19,7 @@ const useHttp= ({ cb }: useHttpProps) => {
       const response = await fetch(config.url, finalConfig)
 
       if(!response.ok) {
-        throw new Error('Request failed!')
+        return new Error('Request failed!')
       }
 
       const data = await response.json()
@@ -36,26 +33,34 @@ const useHttp= ({ cb }: useHttpProps) => {
           cb(transformedData)
         }
       }
-
     } catch (error) {
       setError(error.message || 'Something went wrong!')
     }
     setIsLoading(false)
-  }
+  },[cb])
 
-  const fetchTasks = (url) => {
-    sendRequest({ url: url }, (data) => {
-      const loadedTasks = []
-      for(const taskKey in data) {
-        loadedTasks.push({ id: taskKey, text: data[taskKey].text })
-      }
-      return loadedTasks
-    })
-  }
+  const fetchTasks = useCallback(async (url: string) => {
+    try {
+      await sendRequest({ url: url }, (data) => {
+        const loadedTasks = []
+        for(const taskKey in data) {
+          loadedTasks.push({ id: taskKey, text: data[taskKey].text })
+        }
+        return loadedTasks
+      })
+    } catch (error) {
+      throw new Error(`Fetch request ${error}`)
+    }
 
-  const deleteTask = (url) => {
-    sendRequest({ url: url, method: 'DELETE' })
-  }
+  }, [sendRequest])
+
+  const deleteTask = useCallback(async (url: string): Promise<void> => {
+    try {
+      await sendRequest({ url: url, method: 'DELETE' })
+    } catch(error) {
+      throw new Error(`New error during delete ${error}`)
+    }
+  },[sendRequest])
 
   return [isLoading, error, fetchTasks, deleteTask, sendRequest]
 
